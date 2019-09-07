@@ -5,15 +5,12 @@ const sign = (data_to_sign, private_key) => {
     return signature
 }
 
-const sign_contract_action = async (transaction_object, contract_address, private_key) => {
+const sign_transaction = async (tx, private_key) => {
+    // @dev set gas config in one place here
+    tx.gas = 5500000
+    tx.gasPrice = web3.utils.toWei('50', 'gwei')
     let signer = web3.eth.accounts.privateKeyToAccount(private_key)
-    let gas_estimate = await transaction_object.estimateGas({ from: signer.address })
-    let signed_transaction = await signer.signTransaction({
-        gas: gas_estimate,
-        gasPrice: web3.utils.toWei('30', 'gwei'),
-        to: contract_address,
-        data: transaction_object.encodeABI()
-    })
+    let signed_transaction = await signer.signTransaction(tx)
     return signed_transaction
 }
 
@@ -31,6 +28,6 @@ const recover_signature = (signature, data_signed) => {
 module.exports = {
     sign,
     recover_signature,
-    sign_contract_action
+    sign_transaction
 }
 

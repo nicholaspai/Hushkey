@@ -1,4 +1,5 @@
 const Web3 = require('web3')
+require('dotenv').config()
 const providerName = (
     process.env.ALCHEMY_API_KEY ?
     `https://eth-ropsten.alchemyapi.io/jsonrpc/${process.env.ALCHEMY_API_KEY}` :

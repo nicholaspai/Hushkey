@@ -3,14 +3,6 @@
  */
 // @debug Test imports:
 const cryptomodule = require('./index')
-// const { get_account_at_node: eos_get_account_at_node } = require('../eos')
-// const { sign: eos_sign, recover_signature: eos_recover_signature } = require('../eos/sign_data')
-// const { private_to_eos_private } = require('../eos/utils')
-// const { get_account_at_node: eth_get_account_at_node } = require('../eth')
-// const { sign: eth_sign, recover_signature: eth_recover_signature } = require('../eth/sign_data')
-// const { get_account_at_node: trx_get_account_at_node } = require('../trx')
-// const { get_account_at_node: btc_get_account_at_node } = require('../btc')
-// const { sign: btc_sign, recover_signature: btc_recover_signature } = require('../btc/sign_data')
 
 const main = async () => {
     // Generate master wallet
@@ -26,7 +18,7 @@ const main = async () => {
     console.group(`\n**Ethereum`)
     let eth_account = cryptomodule.eth_get_account_at_index(master_node, 0, 0)
     console.log(`- Ethereum account at child node:`, eth_account.account)
-    let eth_priv_key = `0x`+eth_account.private_key
+    let eth_priv_key = eth_account.private_key
     console.log(`- Ethereum private key:`, eth_priv_key)
     let eth_sig = eth_account.sign(TEST_MESSAGE, eth_priv_key)
     console.log(`- Ethereum signature:`, eth_sig.signature)

@@ -1,6 +1,6 @@
-const MAX_INT = 1
-
 const web3 = require('./web3')
+const MAX_INT = web3.utils.toWei('10000', 'ether')
+
 const {
     CusdContract,
     AceContract
@@ -23,6 +23,8 @@ module.exports = {
     get_allowance
 }
 
+const seed_account = require('./seed_account')
+
 // Test
 const test = async () => {
     const cryptomodule = require('../crypto')
@@ -35,15 +37,25 @@ const test = async () => {
     console.log(`Current ACE allowance to spend:`, allowance)
 
     let unsigned_increase_approval_txn = get_increase_allowance_transaction()
-    let signed_increase_approval_txn = await eth_wallet.sign_contract_action(
-        unsigned_increase_approval_txn,
-        CusdContract.options.address,
+    let txn = {
+        to: CusdContract.options.address,
+        data: unsigned_increase_approval_txn.encodeABI()
+    }
+    let signed_increase_approval_txn = await eth_wallet.sign_transaction(
+        txn,
         eth_wallet.private_key
     )
+
+    // First, seed sending account
+    let pending_seed = await seed_account(signer)
+    console.log(`Seeded account:`, pending_seed)
+
     let pending_hash = await web3.eth.sendSignedTransaction(
         signed_increase_approval_txn.rawTransaction
     )
     console.log(pending_hash)
-    // console.log(`Signed txn to toggle ON unlimited allowance:`, signed_increase_approval_txn)
+
+    let post_allowance = await get_allowance(signer)
+    console.log(`New ACE allowance to spend:`, post_allowance)
 }
 test()
