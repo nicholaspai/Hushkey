@@ -41,6 +41,11 @@ userRouter.post('/login', async (req, res) => {
     }
 });
 
+userRouter.post('/logout', authenticate, async (req, res) => {
+    req.session.auth = false;
+    res.status(200).send({ message:'User logged out' });
+});
+
 userRouter.post('/send', authenticate, async(req, res) => {
 
     res.send('cool');
@@ -51,11 +56,11 @@ userRouter.get('/uuid', (req, res) => {
 });
 
 
-userRouter.post('/send', (req, res) => {
-    const requiredParams = ['uuid', 'password', 'toAddress', 'transaction', 'chain'];
-    // Assume ETH as chain for now, can adjust later
-    if (reqIsMissingParams(req, res, requiredParams)) return;
-    res.send('Parameters are correct');
-});
+// userRouter.post('/send', (req, res) => {
+//     const requiredParams = ['uuid', 'password', 'toAddress', 'transaction', 'chain'];
+//     // Assume ETH as chain for now, can adjust later
+//     if (reqIsMissingParams(req, res, requiredParams)) return;
+//     res.send('Parameters are correct');
+// });
 
 module.exports = userRouter;
