@@ -15,7 +15,7 @@ const get_account_at_node = (node) => {
 const { get_path_for_address } = require('../bip44/path')
 const COIN_TYPES = require('../bip44/cointypes')
 const { get_hd_node_from_path } = require('../bip32/index')
-const { sign, recover_signature } = require('./sign_data')
+const { sign, recover_signature, sign_contract_action } = require('./sign_data')
 const get_account_at_index = (hd_wallet, address_index, account=0) => {
     let coin = COIN_TYPES['ETH']
     account = account.toString() + `'`
@@ -28,6 +28,7 @@ const get_account_at_index = (hd_wallet, address_index, account=0) => {
         account: _account,
         private_key,
         sign,
+        sign_contract_action,
         recover_signature
     }
 }
