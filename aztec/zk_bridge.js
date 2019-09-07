@@ -8,7 +8,6 @@ const web3 = require('./web3')
 const erc20_to_zk_notes = async (amount_to_deposit, eth_wallet) => {
     const depositor = secp256k1.accountFromPrivateKey(eth_wallet.private_key)
     const public_value = -1*amount_to_deposit
-    const amount_wei = parseFloat(web3.utils.toWei(amount_to_deposit.toString(), 'ether'))
 
     let notes = [ await note.create(depositor.publicKey, amount_to_deposit)]
 
@@ -32,11 +31,15 @@ const erc20_to_zk_notes = async (amount_to_deposit, eth_wallet) => {
     )
 
     // Approve ACE to spend public value
-    let txn = AceContract.methods.publicApprove(
+    let txn_data = AceContract.methods.publicApprove(
         ZKAssetContract.options.address, 
         proof.hash, 
         public_value
     )
+    let txn = {
+        to: AceContract.options.address,
+        data: txn_data.encodeABI()
+    }
     let signed_txn = await eth_wallet.sign_transaction(
         txn,
         eth_wallet.private_key
@@ -46,11 +49,15 @@ const erc20_to_zk_notes = async (amount_to_deposit, eth_wallet) => {
     )
 
     // Confidential Transfer
-    let ct_txn = ZKAssetContract.methods.confidentialTransfer(
+    let ct_txn_data = ZKAssetContract.methods.confidentialTransfer(
         proof_data, 
         signatures
     )
-    let signed_ct_txn = await eth_wallet.signTransaction(
+    let ct_txn = {
+        to: ZKAssetContract.options.address,
+        data: ct_txn_data.encodeABI()
+    }
+    let signed_ct_txn = await eth_wallet.sign_transaction(
         ct_txn,
         eth_wallet.private_key
     )

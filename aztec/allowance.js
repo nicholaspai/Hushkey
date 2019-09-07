@@ -72,8 +72,8 @@ const test = async () => {
     let post_balance = await get_balance(signer)
     console.log(`New ERC20 balance:`, post_balance)
 
-    // const amount_to_deposit = 10
-    // let convert_zk_notes = await zk_bridge.erc20_to_zk_notes(amount_to_deposit, eth_wallet)
-    // console.log(convert_zk_notes)
+    const amount_to_deposit = 10
+    let convert_zk_notes = await zk_bridge.erc20_to_zk_notes(amount_to_deposit, eth_wallet)
+    console.log(convert_zk_notes)
 }
 test()
