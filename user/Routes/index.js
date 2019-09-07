@@ -9,21 +9,18 @@ userRouter.get('/health', (req, res) => {
     res.send('User server is healthy...');
 });
 
-userRouter.post('/createUser', (req, res) => {
+userRouter.post('/createUser', async (req, res) => {
     try {
         const requiredParams = ['uuid', 'password'];
         if (reqIsMissingParams(req, res, requiredParams)) return;
-        registerUser(req.body.uuid, req.body.password);
+        // Ensure user is UNIQUE!
+        await registerUser(req.body.uuid, req.body.password);
         res.status(200).send('User creation successful');
 
     } catch(err) {
         console.log(err);
-        res.status(400).send('User created failed');
+        res.status(400).send('User creation failed');
     }
-    
-
-    
-
 });
 
 
