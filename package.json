@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "bip39": "^3.0.2",
+    "bitcore-message": "^1.0.4",
     "bs58check": "^2.1.2",
     "create-hash": "^1.2.0",
     "elliptic": "^6.5.1",
@@ -12,7 +13,9 @@
     "ethereumjs-util": "^6.1.0",
     "hdkey": "^1.1.1",
     "js-sha3": "^0.8.0",
-    "jssha": "^2.3.1"
+    "jssha": "^2.3.1",
+    "tronweb": "^2.7.1",
+    "web3": "^1.2.1"
   },
   "devDependencies": {},
   "scripts": {
