@@ -12,7 +12,7 @@ transactionRouter.post('/buildTx', authenticate, async(req, res) => {
 });
 
 transactionRouter.post('/signTx', authenticate, async(req, res) => {
-    const requiredParams = ['chain', 'txInfo'];
+    const requiredParams = ['txInfo', 'path'];
     if (reqIsMissingParams(req,res, requiredParams)) return;
     let data = {
         chain: req.body.chain,
