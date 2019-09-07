@@ -17,7 +17,7 @@ const CUSDABI = JSON.parse(fs.readFileSync('./aztec/artifacts/MetaToken.json'))[
 
 // Load addresses
 const availableAddresses = aztecContractAddresses.getContractAddressesForNetwork(networkIdMap[NET])
-const contractAddresses = require('./address-book').contracts
+const contractAddresses = require('./address_book').contracts
 const CusdAddress = contractAddresses['CUSD_ROPSTEN']
 const ZKAssetAddress = contractAddresses['ZK20_ROPSTEN']
 

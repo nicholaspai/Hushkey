@@ -37,6 +37,10 @@ const generate_hd_wallet = () => {
         throw new Error(`Generate BIP32 HD wallet:`,err)
     }
 }
+const get_hd_wallet_from_master_seed = (seed_buffer) => {
+    let hd_wallet = hdkey.fromMasterSeed(seed_buffer)
+    return hd_wallet
+}
 const get_hd_node_from_path = (hd_wallet, bip_44_path) => {
     try {
         let child_node = hd_wallet.derive(bip_44_path)
@@ -48,6 +52,7 @@ const get_hd_node_from_path = (hd_wallet, bip_44_path) => {
 
 module.exports = {
     generate_hd_wallet,
+    get_hd_wallet_from_master_seed,
     get_hd_node_from_path,
     get_hd_node_from_path
 }
