@@ -3,9 +3,11 @@ const mongoose = require('mongoose');
 const connectToUserDb = () => {
     // Handle Mongoose auth
 try {
-    const mongoUrl = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PWD}@cluster0-95hao.mongodb.net/user_db`;
+    const user = process.env.MONGO_USER;
+    const pwd = process.env.MONGO_PWD;
+    const mongoUrl = `mongodb+srv://${user}:${pwd}@cluster0-95hao.mongodb.net/user_db`;
     mongoose.connect(mongoUrl, {useNewUrlParser: true}, (err) => {
-        if (err) console.log('DB connection error');
+        if (err) console.log(err);
         console.log('User DB connected...');
     });
 } catch (err) {

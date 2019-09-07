@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const connectToUserDb = require('../../../util/connectToUserDb');
-const User = require('../../models/user');
+const connectToUserDb = require('../../../../util/connectToUserDb');
+const User = require('../../../models/user');
 const bcrypt = require('bcrypt');
 
 require('dotenv').config();

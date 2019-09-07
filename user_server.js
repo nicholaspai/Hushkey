@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const userRouter = require('./user/Routes');
+const { userRouter, authRouter, transactionRouter } = require('./user/Routes');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const port = 3000;
@@ -20,6 +20,8 @@ try {
 }
 
 app.use('/user', userRouter);
+app.use('/user/auth', authRouter);
+app.use('/user/tx', transactionRouter);
 
 
 
