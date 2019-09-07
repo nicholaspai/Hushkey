@@ -1,5 +1,5 @@
 const custodyRouter = require('express').Router();
-const reqIsMissingParams = require('../../middleware/reqIsMissingParams');
+const reqIsMissingParams = require('../../middleware/authenticate');
 
 /*
  * Health check route for the Custody server
@@ -13,6 +13,14 @@ custodyRouter.post('/generateWallet', (req, res) => {
     // Maps uuid -> PROTECTED(seed)
 });
 
+custodyRouter.post('/signTx', (req, res) => {
+    const requiredParams = ['chain', 'transaction'];
+    // Call Nick's signTX functions
+    // validate function?
+    const signedTx = "hsldfhamsxsuhnsgh";
+    res.status(200).send({ success: true, signedTx: signedTx });
+});
+
 // Returns addresses for a given account
 custodyRouter.get('/getAddresses', (req, res) => {
     const requiredParams = ['uuid'];
@@ -23,7 +31,7 @@ custodyRouter.get('/getAddresses', (req, res) => {
     // Creates a mapping of 
     //Address -> Path
     // coin type, account, address index -> PATH
-    res.status(200).send('Address placeholder');
+    res.status(200).send({txResponse: 'Address placeholder'});
 });
 
 custodyRouter.post('/sendTransaction', (req, res) => {
