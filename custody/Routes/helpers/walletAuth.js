@@ -16,4 +16,16 @@ const storeMasterSeed = async (uuid, master_seed) => {
     return "Success";
 }
 
-module.exports = storeMasterSeed;
+const retrieveMasterSeed = async (uuid) => {
+    try {
+        const seed = await Wallet.find({uuid: uuid});
+        return seed[0].seed;
+    } catch (err) {
+        console.log("Something broke retrieving master seed");
+    }
+}
+
+module.exports = { 
+    storeMasterSeed,
+    retrieveMasterSeed
+}

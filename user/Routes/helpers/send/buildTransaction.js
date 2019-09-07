@@ -1,7 +1,4 @@
-const TronWeb = require('tronweb');
-const BigNumber = require('bignumber.js');
-const Web3 = require('web3');
-const { getCurrentGasPrices } = require('./getCurrentGasPrices.js');
+const web3 = require('../../../../aztec/web3');
 
 require('dotenv').config();
 
@@ -26,10 +23,9 @@ const buildTransaction = async (chain, txInfo) => {
             // build and return BTC transaction
             break;
         case "ETH":
-            console.log("Building Eth transaction...");
             const response = await buildEthTransaction(txInfo);
             if (!(response.success)) return "Error building transaction";
-            return response.tx;
+            return response;
         case "EOS":
             // build and return EOS transaction
             break;
@@ -40,45 +36,22 @@ const buildTransaction = async (chain, txInfo) => {
 }
 
 /* ETH */
-// const buildEthTransaction = async (txInfo) => {
-//     try {
-//         var sendAddr = txInfo.addressFrom;
-//         var recvAddr = txInfo.addressTo;
-//         var quantity = txInfo.quantity;
-//     } catch (err) {
-//         return {success: false, messasge: "Malformed params"}
-//     }
-//     const pricesObj = await getCurrentGasPrices();
-	
-// 	if (!pricesObj.success) {
-// 		return {success: false, message: 'getCurrentGasPrices error', error: pricesObj.err};
-// 	}
-// 	const gasPrices = pricesObj.prices;
 
-// 	web3HTTP.eth.defaultAccount = sendAddr;
-// 	try {
-// 		const nonce = await web3HTTP.eth.getTransactionCount(web3HTTP.eth.defaultAccount, 'pending');
-// 		const weiAmount = new BigNumber(quantity).times(new BigNumber(1000000000000000000)).toFixed(0);
-
-//         console.log(sendAddr);
-//         console.log(recvAddr);
-//         console.log(web3HTTP.utils.toHex(weiAmount));
-//         console.log(web3HTTP.utils.toHex(gasPrices.medium * 1000000000));
-//         console.log(nonce);
-//         console.log(chain_id);
-// 		const details = {
-// 			to: recvAddr,
-// 			value: web3HTTP.utils.toHex(weiAmount),
-// 			gas: web3HTTP.utils.toHex(21000),
-// 			gasPrice: web3HTTP.utils.toHex(gasPrices.medium * 1000000000), // converts the gwei price to wei
-// 		};
-// 		return {success: true, tx: details};
-
-// 	} catch (err) {
-// 		console.log('buildEthTransaction: ' + err);
-// 		return {success: false, message: 'error getting transaction count', error: err};
-// 	}
-// };
+const buildEthTransaction = (txInfo) => {
+    try {
+        const addressTo = txInfo.addressTo;
+        const quantity = txInfo.quantity;
+        //const contactData = txInfo.contactData; //data
+        const transactionObj = {
+            "to": addressTo,
+            "value": web3.utils.toWei(quantity, 'ether'),
+        }
+        return {success: true, transaction: transactionObj}
+    } catch (err) {
+        console.log(err);
+        return {success: false, message: "Malformed params"}
+    }
+};
 
 module.exports = { 
     buildTransaction
