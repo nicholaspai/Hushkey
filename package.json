@@ -1,6 +1,7 @@
 {
   "name": "ethboston",
   "version": "1.0.0",
+<<<<<<< HEAD
   "description": "A wallet that abstracts private key custody from user.",
   "main": "index.js",
   "dependencies": {
@@ -13,6 +14,10 @@
     "jssha": "^2.3.1"
   },
   "devDependencies": {},
+=======
+  "description": "",
+  "main": "user-server.js",
+>>>>>>> 803ca1d2543fb515341bb0b3e05b86d150d15e29
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,11 +25,23 @@
     "type": "git",
     "url": "git+https://github.com/Alexander-AJ-Berman/ethboston.git"
   },
+<<<<<<< HEAD
   "keywords": [],
+=======
+>>>>>>> 803ca1d2543fb515341bb0b3e05b86d150d15e29
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Alexander-AJ-Berman/ethboston/issues"
   },
+<<<<<<< HEAD
   "homepage": "https://github.com/Alexander-AJ-Berman/ethboston#readme"
+=======
+  "homepage": "https://github.com/Alexander-AJ-Berman/ethboston#readme",
+  "dependencies": {
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.13"
+  }
+>>>>>>> 803ca1d2543fb515341bb0b3e05b86d150d15e29
 }
