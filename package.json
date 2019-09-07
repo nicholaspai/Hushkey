@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/Alexander-AJ-Berman/ethboston#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.13"
   }
 }
