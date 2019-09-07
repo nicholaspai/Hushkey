@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const connectToUserDb = require('../../../../util/connectToUserDb');
 const User = require('../../../models/user');
 const bcrypt = require('bcrypt');
@@ -10,7 +9,12 @@ connectToUserDb();
 
 const registerUser = async (uuid, password) => {
     const encryptedPwd = await bcrypt.hash(password.toString(), Number(process.env.SALT_ROUNDS));
-
+    
+    const exists = await User.find({uuid: uuid});
+    if (exists.length != 0) {
+        // uuid not unique
+        return ({success: false, message: "Username is taken, try another"})
+    }
     const user = new User({
         uuid: uuid,
         password: encryptedPwd,
@@ -19,7 +23,8 @@ const registerUser = async (uuid, password) => {
 
     user.save((err) => {
         if (err) console.log(err);
-    });      
+    });
+    return ({success: true, message: "User registered"})     
 }
 
 const verifyUser = async (uuid, password) => {
