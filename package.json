@@ -5,6 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "bip39": "^3.0.2",
+    "bs58check": "^2.1.2",
+    "create-hash": "^1.2.0",
     "elliptic": "^6.5.1",
     "eosjs-ecc": "^4.0.4",
     "ethereumjs-util": "^6.1.0",

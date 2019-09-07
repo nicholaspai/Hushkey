@@ -59,6 +59,7 @@ const { get_account_at_node: eos_get_account_at_node } = require('../eos')
 const { private_to_eos_private } = require('../eos/utils')
 const { get_account_at_node: eth_get_account_at_node } = require('../eth')
 const { get_account_at_node: trx_get_account_at_node } = require('../trx')
+const { get_account_at_node: btc_get_account_at_node } = require('../btc')
 
 const main = async () => {
     // Generate master wallet
@@ -111,5 +112,20 @@ const main = async () => {
     console.log(`- TRX private key:`, trx_priv_key)
     console.groupEnd()
 
+    // BTC
+    console.group(`\n**BTC`)
+    let btc_path = get_path_for_address(
+        COIN_TYPES['BTC'],
+        account=`0'`,
+        change=`0`,
+        address_index=`0`
+    )
+    let btc_child_node = get_hd_node_from_path(new_wallet, btc_path)
+    let btc_account = btc_get_account_at_node(btc_child_node)
+    console.log(`- BTC account at child node:`, btc_account)
+    let btc_priv_key = btc_child_node._privateKey.toString('hex')
+    console.log(`- BTC private key:`, btc_priv_key)
+    console.groupEnd()
+    
 }
 main()
