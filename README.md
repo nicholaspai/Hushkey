@@ -16,3 +16,7 @@ A BIP-32 hierarchical deterministic wallet implementation with an API interface.
 # Example applications:
 
 AZTEC Extension for private transactions. A key-less, private wallet.
+
+#TODO : AJ
+    - Password salting and hashing
+    - Only allow unique IDs in username selection

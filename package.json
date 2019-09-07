@@ -7,12 +7,17 @@
     "bip39": "^3.0.2",
     "bs58check": "^2.1.2",
     "create-hash": "^1.2.0",
+    "dotenv": "^8.1.0",
     "elliptic": "^6.5.1",
     "eosjs-ecc": "^4.0.4",
     "ethereumjs-util": "^6.1.0",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
     "hdkey": "^1.1.1",
     "js-sha3": "^0.8.0",
-    "jssha": "^2.3.1"
+    "jssha": "^2.3.1",
+    "mongoose": "^5.6.13",
+    "nodemon": "^1.19.2"
   },
   "devDependencies": {},
   "scripts": {

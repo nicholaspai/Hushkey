@@ -1,6 +1,7 @@
 const userRouter = require('express').Router();
 const reqIsMissingParams = require('../../util/reqIsMissingParams');
-const registerUser = require('./helpers/registerUser');
+const { registerUser, verifyUser } = require('./helpers/userAuth');
+const { authenticate } = require('../../middleware/authenticate');
 
 /*
  * Health check route for the user server
@@ -21,6 +22,32 @@ userRouter.post('/createUser', async (req, res) => {
         console.log(err);
         res.status(400).send('User creation failed');
     }
+});
+
+userRouter.post('/login', async (req, res) => {
+    try {
+        const requiredParams = ['uuid', 'password'];
+
+        if (await verifyUser(req.body.uuid, req.body.password)) { // Auth successful
+            req.session.uuid = req.body.uuid;
+            req.session.auth = true;
+            res.status(200).send({ message: 'User logged in' });
+        } else { // Auth failed
+            res.status(401).send({ message: 'Invalid credentials' });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(400).send({ message: 'Invalid credentials'});
+    }
+});
+
+userRouter.post('/send', authenticate, async(req, res) => {
+
+    res.send('cool');
+});
+
+userRouter.get('/uuid', (req, res) => {
+    res.status(200).send(req.session.uuid);
 });
 
 
