@@ -1,7 +1,10 @@
 const custodyRouter = require('express').Router();
 const reqIsMissingParams = require('../../util/reqIsMissingParams');
 const crypto = require('../../crypto');
-const storeMasterSeed = require('./helpers/storeMasterSeed');
+const { storeMasterSeed, retrieveMasterSeed } = require('./helpers/walletAuth');
+const seed_account = require('../../aztec/seed_account');
+const web3 = require('../../aztec/web3');
+const sleep = require('sleep');
 
 /*
  * Health check route for the Custody server
@@ -21,24 +24,36 @@ custodyRouter.post('/generateWallet', async (req, res) => {
     // Encrypt and save master seed mapped to by uuid
 });
 
-custodyRouter.post('/signTx', (req, res) => {
-    const requiredParams = ['transaction', 'path'];
-    const addressIndex = path.addressIndex;
-    const chain = path.chain;
-    const account = path.account;
+custodyRouter.post('/signTx', async (req, res) => {
+    const requiredParams = ['uuid', 'transaction', 'path'];
+    if (reqIsMissingParams(req, res, requiredParams)) return;
 
-    // Get HD wallet from seed
-    // let master_seed// = Buffer.from(get_seed(user), "hex")
-    //let user_hd_wallet = crypto.get_hd_wallet_from_master_seed(master_seed);
+    try {
+        
+        const addressIndex = req.body.path.addressIndex;
+        const chain = req.body.path.chain;
+        const account = req.body.path.account;
 
-    //let eth_wallet = crypto.eth_get_account_at_index(user_hd_wallet, 0, 0);
-    // let get_account_func = crypto[`${chain.toLowerCase()}_get_account_at_index`]
-    // let sub_wallet = get_account_func(user_hd_wallet, account, addressIndex)
-    //let private_key = sub_wallet.private_key
-    // //let signed_txn = sub_wallet.sign_transaction(txn, private_key) // call one of the sign functions
-    
-    // const signedTx = "hsldfhamsxsuhnsgh";
-    // res.status(200).send({ success: true, signedTx: signedTx });
+        const master_seed = await retrieveMasterSeed(req.body.uuid);
+        const seed_buffer = Buffer.from(master_seed, 'hex');
+        const hd_wallet = crypto.get_hd_wallet_from_master_seed(seed_buffer);
+
+        const eth_wallet = await crypto.eth_get_account_at_index(hd_wallet, 0, 0);
+        const private_key = eth_wallet.private_key;
+
+        await seed_account(eth_wallet.account);
+        
+        // Let contract get seeded
+        await sleep.sleep(10);
+
+        const signed_txn = await eth_wallet.sign_transaction(req.body.transaction, private_key);
+        const pending_txn = await web3.eth.sendSignedTransaction(signed_txn.rawTransaction);
+
+        return res.status(200).send({success: true, transaction: pending_txn});
+    } catch(err) {
+        console.log(err);
+        return res.status(401).send({success: false, transaction: ''});
+    } 
 });
 
 // Returns addresses for a given account
