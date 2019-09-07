@@ -4,6 +4,7 @@
   "description": "A wallet that abstracts private key custody from user.",
   "main": "index.js",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "bip39": "^3.0.2",
     "bs58check": "^2.1.2",
     "create-hash": "^1.2.0",
