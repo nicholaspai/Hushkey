@@ -2,13 +2,22 @@ const express = require('express');
 const app = express();
 const userRouter = require('./user/Routes');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 const port = 3000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
-
+try {
+    app.use(session({
+        secret: process.env.SESSION_SECRET,
+        resave: true,
+        saveUninitialized: true
+    }));
+} catch (err) {
+    console.log("Check .env file");
+}
 
 app.use('/user', userRouter);
 
