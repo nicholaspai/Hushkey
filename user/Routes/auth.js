@@ -2,13 +2,25 @@ const authRouter = require('express').Router();
 const reqIsMissingParams = require('../../util/reqIsMissingParams');
 const { registerUser, verifyUser } = require('./helpers/auth/userAuth');
 const { authenticate } = require('../../middleware/authenticate');
+const axios = require('axios');
 
 authRouter.post('/createUser', async (req, res) => {
     try {
         const requiredParams = ['uuid', 'password'];
         if (reqIsMissingParams(req, res, requiredParams)) return;
         // Ensure user is UNIQUE!
-        await registerUser(req.body.uuid, req.body.password);
+        const status = await registerUser(req.body.uuid, req.body.password);
+
+        if (!status.success) {
+            res.status(200).send('Username taken, try another');
+            return;
+        }
+        
+        let data = {
+            "uuid": req.body.uuid
+        }
+        await axios.post('http://localhost:3001/custody/generateWallet', data);
+
         res.status(200).send('User creation successful');
 
     } catch(err) {
