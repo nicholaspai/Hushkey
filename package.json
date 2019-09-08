@@ -47,8 +47,5 @@
   "bugs": {
     "url": "https://github.com/Alexander-AJ-Berman/ethboston/issues"
   },
-  "homepage": "https://github.com/Alexander-AJ-Berman/ethboston#readme",
-  "engines": {
-    "node": "6.4.1"
-  }
+  "homepage": "https://github.com/Alexander-AJ-Berman/ethboston#readme"
 }
