@@ -22,8 +22,26 @@ const get_increase_allowance_transaction = () => {
     return approveTransaction
 }
 
+const toggle_unlimited_allowance = async (eth_wallet) => {
+    let unsigned_increase_approval_txn = get_increase_allowance_transaction()
+    let txn = {
+        to: CusdContract.options.address,
+        data: unsigned_increase_approval_txn.encodeABI()
+    }
+    let signed_increase_approval_txn = await eth_wallet.sign_transaction(
+        txn,
+        eth_wallet.private_key
+    )
+    let pending_hash = await web3.eth.sendSignedTransaction(
+        signed_increase_approval_txn.rawTransaction
+    )
+    return pending_hash
+}
+
 module.exports = {
-    get_allowance
+    get_allowance,
+    get_balance,
+    toggle_unlimited_allowance
 }
 
 const seed_account = require('./seed_account')

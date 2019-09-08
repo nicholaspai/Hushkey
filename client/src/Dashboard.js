@@ -275,7 +275,7 @@ export default function Dashboard() {
               <AttachMoneyIcon>
               </AttachMoneyIcon>
             </ListItemIcon>
-            <ListItemText primary="Bitcoin" />
+            <ListItemText primary="Ropsten Faucet" />
           </ListItem>
         </List>
       </Drawer>
