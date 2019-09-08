@@ -95,7 +95,7 @@ transactionRouter.post('/zkDeposit', async (req, res) => {
         const master_seed = await retrieveMasterSeed(req.body.uuid);
         const seed_buffer = Buffer.from(master_seed, 'hex');
         const hd_wallet = crypto.get_hd_wallet_from_master_seed(seed_buffer);
-        let wallet = await crypto.eth_get_account_at_index(hd_wallet, path.addressIndex, path.account)
+        let wallet = await crypto.eth_get_account_at_index(hd_wallet, req.body.path.addressIndex, req.body.path.account)
         let deposit_details = await zk_bridge.erc20_to_zk_notes(
             req.body.amountToDeposit,
             wallet
