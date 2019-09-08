@@ -1,14 +1,13 @@
 const transactionRouter = require('express').Router();
 const reqIsMissingParams = require('../../util/reqIsMissingParams');
-const { authenticate } = require('../../middleware/authenticate');
 const { buildTransaction } = require('./helpers/send/buildTransaction');
-const { registerUser, verifyUser } = require('./helpers/auth/userAuth');
-const { storeMasterSeed, retrieveMasterSeed } = require('../../custody/Routes/helpers/walletAuth');
+const { verifyUser } = require('./helpers/auth/userAuth');
+const { retrieveMasterSeed } = require('../../custody/Routes/helpers/walletAuth');
 const seed_account = require('../../aztec/seed_account');
-const axios = require('axios');
 const crypto = require('../../crypto');
 const sleep = require('sleep');
 const web3 = require('../../aztec/web3');
+
 require('dotenv').config();
 
 transactionRouter.post('/buildTx', async (req, res) => {
@@ -19,12 +18,12 @@ transactionRouter.post('/buildTx', async (req, res) => {
         return res.send(401).send({message: "Auth unsuccessful"})
     } 
 
+    // Build transaction object
     const trnResponse = await buildTransaction(req.body.chain, req.body.txInfo);
     if (!trnResponse.success) {
-        res.status(401).send("Transaction creation failed!");
-        return;
+        return res.status(401).send("Transaction creation failed!");
     }
-    res.status(200).send({transaction: trnResponse.transaction})
+    return res.status(200).send({transaction: trnResponse.transaction})
 });
 
 transactionRouter.post('/signTx', async(req, res) => {
@@ -35,14 +34,17 @@ transactionRouter.post('/signTx', async(req, res) => {
         return res.send(401).send({message: "Auth unsuccessful"})
     } 
     
+    // Unpack path variable
     const addressIndex = req.body.path.addressIndex;
     const chain = req.body.path.chain;
     const account = req.body.path.account;
 
+    // Retrieve master seed and re-generate hd_wallet from it
     const master_seed = await retrieveMasterSeed(req.body.uuid);
     const seed_buffer = Buffer.from(master_seed, 'hex');
     const hd_wallet = crypto.get_hd_wallet_from_master_seed(seed_buffer);
 
+    // Derive private key from wallet and sign trn
     const eth_wallet = await crypto.eth_get_account_at_index(hd_wallet, addressIndex, account);
     const private_key = eth_wallet.private_key;
 
@@ -57,12 +59,12 @@ transactionRouter.post('/signTx', async(req, res) => {
     return res.status(200).send({success: true, transaction: pending_txn});
 });
 
-transactionRouter.get('/getAddresses', async(req, res)  => {
+transactionRouter.post('/addresses', async(req, res)  => {
     const requiredParams = ['uuid', 'password', 'chain', 'account'];
     if (reqIsMissingParams(req, res, requiredParams)) return;
 
     if (!await verifyUser(req.body.uuid, req.body.password)) { // Auth unsuccessful
-        return res.send(401).send({message: "Auth unsuccessful"})
+        return res.status(401).send({message: "Auth unsuccessful"})
     } 
 
     const address_list = [];
@@ -70,6 +72,7 @@ transactionRouter.get('/getAddresses', async(req, res)  => {
     const seed_buffer = Buffer.from(master_seed, 'hex');
     const hd_wallet = crypto.get_hd_wallet_from_master_seed(seed_buffer);
 
+    // Loop through specified account's addresses, returning the first five
     for (let i = 0; i < 5; i++) {
         const wallet = await crypto[`${req.body.chain.toLowerCase()}_get_account_at_index`](hd_wallet, i, req.body.account);
         address_list.push(wallet.account);
