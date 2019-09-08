@@ -1,0 +1,84 @@
+{
+  "_args": [
+    [
+      "@aztec/contract-addresses@1.7.2",
+      "/Users/alexanderberman/code/ethboston"
+    ]
+  ],
+  "_from": "@aztec/contract-addresses@1.7.2",
+  "_id": "@aztec/contract-addresses@1.7.2",
+  "_inBundle": false,
+  "_integrity": "sha512-Ypx1huPyLtd2AG0l80KCjn3ghKO/c9opkYZ3SJzO6NuF6MaorPWptr0ROKJvnQpNZagC0ITP4VIWgP5Kq1XaxQ==",
+  "_location": "/@aztec/contract-addresses",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "@aztec/contract-addresses@1.7.2",
+    "name": "@aztec/contract-addresses",
+    "escapedName": "@aztec%2fcontract-addresses",
+    "scope": "@aztec",
+    "rawSpec": "1.7.2",
+    "saveSpec": null,
+    "fetchSpec": "1.7.2"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@aztec/contract-addresses/-/contract-addresses-1.7.2.tgz",
+  "_spec": "1.7.2",
+  "_where": "/Users/alexanderberman/code/ethboston",
+  "author": {
+    "name": "AZTEC"
+  },
+  "bugs": {
+    "url": "https://github.com/AztecProtocol/AZTEC/issues"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11"
+  },
+  "description": "Addresses of deployed AZTEC contracts on Ethereum mainnet and testnets",
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "eslint": "^5.15.3",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "fixpack": "^2.3.1",
+    "shx": "^0.3.2"
+  },
+  "engines": {
+    "node": ">=8.3"
+  },
+  "files": [
+    "/addresses",
+    "/lib"
+  ],
+  "homepage": "https://github.com/AztecProtocol/AZTEC#readme",
+  "keywords": [
+    "aztec",
+    "blockchain",
+    "confidentiality",
+    "cryptography",
+    "ethereum",
+    "privacy",
+    "protocol"
+  ],
+  "license": "LGPL-3.0",
+  "main": "./lib",
+  "name": "@aztec/contract-addresses",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AztecProtocol/AZTEC.git"
+  },
+  "scripts": {
+    "build": "yarn clean && babel --copy-files --out-dir ./lib --root-mode upward ./src",
+    "build:prod": "yarn clean && babel --copy-files --out-dir ./lib --root-mode upward ./src",
+    "clean": "shx rm -rf ./lib",
+    "lint": "eslint --ignore-path ../../.eslintignore ."
+  },
+  "version": "1.7.2"
+}
