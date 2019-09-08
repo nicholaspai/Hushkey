@@ -292,7 +292,7 @@ export default function Dashboard() {
             {/* Balance */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <Deposits oraclePrice={oracle} chain={chain}/>
+                <Deposits oraclePrice={oracle} chain={chain} addresses={addresses}/>
               </Paper>
             </Grid>
             {/* Recent Orders */}
