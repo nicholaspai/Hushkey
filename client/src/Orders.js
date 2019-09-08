@@ -1,7 +1,6 @@
 /* eslint-disable no-script-url */
 
 import React from 'react';
-import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,6 +9,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
 import {chain_names} from './chains'
+import Slider from '@material-ui/core/Slider';
+import Typography from '@material-ui/core/Typography';
 
 // Generate Order Data
 function createData(index, address, transact) {
@@ -31,6 +32,33 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Orders({ chain }) {
+  const marks = [
+    {
+      value: 0,
+      label: '0',
+    },
+    {
+      value: 2,
+      label: '2',
+    },
+    {
+      value: 4,
+      label: '4',
+    },
+    {
+      value: 6,
+      label: '6',
+    },
+    {
+      value: 8,
+      label: '8',
+    },
+    {
+      value: 10,
+      label: '10',
+    }
+  ];
+
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -54,9 +82,18 @@ export default function Orders({ chain }) {
         </TableBody>
       </Table>
       <div className={classes.seeMore}>
-        <Link color="primary" href="javascript:;">
-          See more orders
-        </Link>
+        <Slider
+          defaultValue={0}
+          aria-labelledby="discrete-slider"
+          valueLabelDisplay="auto"
+          step={1}
+          min={0}
+          max={10}
+          marks={marks}
+        />
+        <Typography id="discrete-slider" gutterBottom>
+          Account
+        </Typography>
       </div>
     </React.Fragment>
   );
