@@ -1,6 +1,6 @@
 const aztec = require('aztec.js')
 const { JoinSplitProof, note } = aztec
-const secp256k1 = require('./@aztec/secp256k1')
+const secp256k1 = require('./module_aztec/secp256k1')
 const { AceContract, ZKAssetContract } = require('./contracts')
 
 const web3 = require('./web3')
