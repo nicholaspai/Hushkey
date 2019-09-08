@@ -38,4 +38,9 @@ transactionRouter.post('/signTx', authenticate, async(req, res) => {
     }    
 });
 
+transactionRouter.post('/getAddresses', authenticate, async(req, res)  => {
+    const requiredParams = ['chain', 'account'];
+    if (reqIsMissingParams(req, res, requiredParams)) return;
+});
+
 module.exports = { transactionRouter }
