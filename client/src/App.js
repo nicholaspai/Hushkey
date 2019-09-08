@@ -6,10 +6,6 @@ import PropTypes from 'prop-types';
 // Material-ui
 import { withStyles } from '@material-ui/core/styles';
 
-// Redux state
-import { connect } from "react-redux";
-import { PAGES } from "./store/globalActions";
-
 // Core Wallet Pages + Header
 import Auth from './Auth'
 import Dashboard from './Dashboard'
@@ -20,16 +16,8 @@ const styles = theme => ({
   },
   page: {
     textAlign: 'center',
-    paddingTop: theme.spacing.unit * 5,
+    paddingTop: theme.spacing(5),
   }
-});
-
-// Redux mappings
-const mapState = state => ({
-  page: state.global.page,
-});
-
-const mapDispatch = dispatch => ({
 });
 
 class App extends Component {
@@ -50,16 +38,9 @@ class App extends Component {
 
     return (
       <div className={classes.root}>
-        { page === PAGES.AUTH ? (
-          <div className={classes.main}>
+        <div className={classes.main}>
             <Auth />
-          </div>
-        ): ("")}
-        { page === PAGES.DASHBOARD ? (
-          <div className={classes.main}>
-            <Dashboard />
-          </div>
-        ): ("")}
+        </div>
       </div>
     );
   }
@@ -69,4 +50,4 @@ App.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withRoot(connect(mapState, mapDispatch)(withStyles(styles)(App)));
+export default withRoot(withStyles(styles)(App));
