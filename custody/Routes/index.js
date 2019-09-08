@@ -57,16 +57,26 @@ custodyRouter.post('/signTx', async (req, res) => {
 });
 
 // Returns addresses for a given account
-custodyRouter.get('/getAddresses', (req, res) => {
-    const requiredParams = ['uuid'];
-    // When addresses are returned to user, creates an in memory mapping of Address_Index (0-5, w.e) -> Path (memcache?)
-    // path consists of coin type, account, address_index
+custodyRouter.post('/getAddresses', async (req, res) => {
+    const requiredParams = ['uuid', 'account', 'chain'];
+    if (reqIsMissingParams(req, res, requiredParams)) return;
 
+    const address_list = [];
+    try {
+        const master_seed = await retrieveMasterSeed(req.body.uuid);
+        const seed_buffer = Buffer.from(master_seed, 'hex');
+        const hd_wallet = crypto.get_hd_wallet_from_master_seed(seed_buffer);
+    
+        for (let i = 0; i < 5; i++) {
+            const wallet = await crypto[`${req.body.chain.toLowerCase()}_get_account_at_index`](hd_wallet, i, req.body.account);
+            address_list.push(wallet.account);
+        }
 
-    // Creates a mapping of 
-    //Address -> Path
-    // coin type, account, address index -> PATH
-    res.status(200).send({txResponse: 'Address placeholder'});
+        return res.status(200).send({success: true, addresses: address_list });
+    } catch (err) {
+        console.log(err);
+        return res.status(200).send({success: false});
+    }
 });
 
 module.exports = custodyRouter;

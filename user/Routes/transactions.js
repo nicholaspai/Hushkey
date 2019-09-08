@@ -38,9 +38,26 @@ transactionRouter.post('/signTx', authenticate, async(req, res) => {
     }    
 });
 
-transactionRouter.post('/getAddresses', authenticate, async(req, res)  => {
+transactionRouter.get('/getAddresses', authenticate, async(req, res)  => {
     const requiredParams = ['chain', 'account'];
     if (reqIsMissingParams(req, res, requiredParams)) return;
+
+    try {
+        let data = {
+            "uuid": req.session.uuid,
+            "chain": req.body.chain,
+            "account": req.body.account
+        }
+
+        const addressResponse = await axios.post('http://localhost:3001/custody/getAddresses', data);
+        if (!addressResponse.data.success) {
+            return res.status(401).send({message: "Failed"});
+        }
+        return res.status(200).send({message: "Addresses received successfully", addresses: addressResponse.data.addresses});
+
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 module.exports = { transactionRouter }
