@@ -7,6 +7,7 @@ const seed_account = require('../../aztec/seed_account');
 const crypto = require('../../crypto');
 const sleep = require('sleep');
 const web3 = require('../../aztec/web3');
+const zk_bridge = require('../../aztec/zk_bridge');
 
 require('dotenv').config();
 
@@ -79,6 +80,27 @@ transactionRouter.post('/addresses', async(req, res)  => {
     }
 
     return res.status(200).send({success: true, addresses: address_list });
+});
+
+
+transactionRouter.post('/zkdeposit', async (req, res) => {
+    const requiredParams = ['uuid', 'account', 'chain', 'index'];
+    if (reqIsMissingParams(req, res, requiredParams)) return;
+
+    try {
+        const master_seed = await retrieveMasterSeed(req.body.uuid);
+        const seed_buffer = Buffer.from(master_seed, 'hex');
+        const hd_wallet = crypto.get_hd_wallet_from_master_seed(seed_buffer);
+        let wallet = await crypto.eth_get_account_at_index(hd_wallet, index, account)
+        let deposit_details = await zk_bridge.erc20_to_zk_notes(
+            amount_to_deposit,
+            wallet
+        )
+        return res.status(200).send(deposit_details)    
+    } catch (err) {
+        console.error(err)
+        return res.status(500).send({ success: false })
+    }
 });
 
 module.exports = { transactionRouter }
