@@ -3,7 +3,7 @@ const app = express();
 const { userRouter, authRouter, transactionRouter } = require('./user/Routes');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const port = 3000;
+const port = 3002;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
