@@ -13,8 +13,10 @@ import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import MenuIcon from '@material-ui/icons/Menu';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { chains } from './chains';
@@ -36,19 +38,7 @@ import EosIcon from './assets/eos.svg'
 import { login } from './services/auth'
 import { getAddresses } from './services/custody'
 import { getQuote } from './services/pricefeed'
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { dripCusd, dripEth } from './services/faucet'
 
 const drawerWidth = 240;
 
@@ -135,6 +125,10 @@ const useStyles = makeStyles(theme => ({
   fixedHeight: {
     height: 240,
   },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
 }));
 
 export default function Dashboard() {
@@ -143,7 +137,12 @@ export default function Dashboard() {
   const [chain, setChain] = useState(chains[0])
   const [authed, setAuthed] = useState(false)
   const [oracle, setOracle] = useState(0)
-  
+  const [faucet, setFaucet] = useState(false)
+  const [addressDripEth, setAddressDripEth] = useState('')
+  const [addressDripCusd, setAddressDripCusd] = useState('')
+  const [pendingHashCusd, setPendingHashCusd] = useState('')
+  const [pendingHashEth, setPendingHashEth] = useState('')
+
   // Log in on load
   useEffect(() => {
     const fetchData = async () => {
@@ -179,6 +178,16 @@ export default function Dashboard() {
     } else {
       alert('Not signed in!')
     }
+  }
+  const handleDripCusd = async (event) => {
+    event.preventDefault()
+    let dripped = await dripCusd(50, addressDripCusd)
+    setPendingHashCusd(dripped.pending_hash)
+  }
+  const handleDripEth = async (event) => {
+    event.preventDefault()
+    let dripped = await dripEth(0.5, addressDripEth)
+    setPendingHashEth(dripped.pending_hash)
   }
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
@@ -226,7 +235,10 @@ export default function Dashboard() {
         </div>
         <Divider />
         <List>
-          <ListItem button onClick={() => setChain(chains[0])}>
+          <ListItem button onClick={() => {
+            setChain(chains[0])
+            setFaucet(false)
+          }}>
             <ListItemIcon>
               <Icon className={classes.iconRoot}>
                 <img className={classes.imageIcon} src={EthIcon} alt="eth"/>
@@ -234,7 +246,10 @@ export default function Dashboard() {
             </ListItemIcon>
             <ListItemText primary="Ethereum" />
           </ListItem>
-          <ListItem button onClick={() => setChain(chains[1])}>
+          <ListItem button onClick={() => {
+            setChain(chains[1])
+            setFaucet(false)
+          }}>
             <ListItemIcon>
               <Icon className={classes.iconRoot}>
                 <img className={classes.imageIcon} src={EosIcon} alt="eos"/>
@@ -242,7 +257,10 @@ export default function Dashboard() {
             </ListItemIcon>
             <ListItemText primary="EOS" />
           </ListItem>
-          <ListItem button onClick={() => setChain(chains[2])}>
+          <ListItem button onClick={() => {
+            setChain(chains[2])
+            setFaucet(false)
+          }}>
             <ListItemIcon>
               <Icon className={classes.iconRoot}>
                 <img className={classes.imageIcon} src={TrxIcon} alt="trx"/>
@@ -250,7 +268,10 @@ export default function Dashboard() {
             </ListItemIcon>
             <ListItemText primary="Tron" />
           </ListItem>
-          <ListItem button onClick={() => setChain(chains[3])}>
+          <ListItem button onClick={() => {
+            setChain(chains[3])
+            setFaucet(false)
+          }}>
             <ListItemIcon>
               <Icon className={classes.iconRoot}>
                 <img className={classes.imageIcon} src={BtcIcon} alt="btc"/>
@@ -258,11 +279,18 @@ export default function Dashboard() {
             </ListItemIcon>
             <ListItemText primary="Bitcoin" />
           </ListItem>
+          <ListItem button onClick={() => setFaucet(true)}>
+            <ListItemIcon>
+              <AttachMoneyIcon>
+              </AttachMoneyIcon>
+            </ListItemIcon>
+            <ListItemText primary="Bitcoin" />
+          </ListItem>
         </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
+        {!faucet && (<Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
@@ -283,8 +311,95 @@ export default function Dashboard() {
               </Paper>
             </Grid>
           </Grid>
-        </Container>
-        <Copyright />
+        </Container>)}
+        {faucet && (
+          <Container maxWidth="lg" className={classes.container}>
+            <Grid container spacing={3}>
+              {/* Drip CUSD */}
+              <Grid item xs={12} md={8} lg={9}>
+                <Paper className={fixedHeightPaper}>
+                  <form className={classes.form} noValidate onSubmit={handleDripCusd}>
+                    <TextField
+                      autoFocus
+                      variant="outlined"
+                      margin="normal"
+                      required
+                      fullWidth
+                      id="address"
+                      label="Enter address"
+                      name="address"
+                      autoComplete="username"
+                      value={addressDripCusd}
+                      onChange={e => setAddressDripCusd(e.target.value)}
+                    />
+                    <TextField
+                      disabled
+                      variant="outlined"
+                      margin="normal"
+                      fullWidth
+                      id="hash"
+                      label="Pending hash"
+                      name="hash"
+                      value={pendingHashCusd}
+                      onChange={e => setAddressDripCusd(e.target.value)}
+                    />
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      className={classes.submit}
+                      disabled={!addressDripCusd}
+                    >
+                      Get 50 ERC20
+                    </Button>
+                  </form>
+                </Paper>
+              </Grid>
+              {/* Drip ETH */}
+              <Grid item xs={12} md={8} lg={9}>
+                <Paper className={fixedHeightPaper}>
+                  <form className={classes.form} noValidate onSubmit={handleDripEth}>
+                    <TextField
+                      autoFocus
+                      variant="outlined"
+                      margin="normal"
+                      required
+                      fullWidth
+                      id="address"
+                      label="Enter address"
+                      name="address"
+                      autoComplete="username"
+                      value={addressDripEth}
+                      onChange={e => setAddressDripEth(e.target.value)}
+                    />
+                    <TextField
+                      disabled
+                      variant="outlined"
+                      margin="normal"
+                      fullWidth
+                      id="hash"
+                      label="Pending hash"
+                      name="hash"
+                      value={pendingHashEth}
+                      onChange={e => setAddressDripEth(e.target.value)}
+                    />
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      className={classes.submit}
+                      disabled={!addressDripEth}
+                    >
+                      Get 0.5 ETH
+                    </Button>
+                  </form>
+                </Paper>
+              </Grid>
+            </Grid>
+          </Container>
+        )}
       </main>
     </div>
   );
