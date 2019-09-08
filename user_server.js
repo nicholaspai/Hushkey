@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const port = 3000;
 const cors = require('cors')
+require('dotenv').config();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -28,4 +29,4 @@ app.use('/user', userRouter);
 app.use('/user/auth', authRouter);
 app.use('/user/tx', transactionRouter);
 
-app.listen(port, () => console.log(`User server running on port ${port}`));
+app.listen(process.env.PORT || port, () => console.log(`User server running on port ${port}`));
