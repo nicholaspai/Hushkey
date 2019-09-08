@@ -83,7 +83,7 @@ transactionRouter.post('/addresses', async(req, res)  => {
 });
 
 
-transactionRouter.post('/zkdeposit', async (req, res) => {
+transactionRouter.post('/zkDeposit', async (req, res) => {
     const requiredParams = ['uuid', 'account', 'chain', 'index'];
     if (reqIsMissingParams(req, res, requiredParams)) return;
 
