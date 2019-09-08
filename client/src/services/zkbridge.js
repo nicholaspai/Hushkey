@@ -18,3 +18,23 @@ export const getAddresses = async (uuid, password, chain, account) => {
         console.error(`user/tx/getAddresses:`,err)
     }
 }
+
+export const depositERC20IntoZk = async (uuid, password, account, chain, addressIndex) => {
+    let method = `zkDeposit`
+    let url = ENDPOINT + method
+    let data = {
+        uuid,
+        password,
+        path: {
+            addressIndex,
+            account,
+            chain
+        }
+    }
+    try {
+        let response = await axios.post(url, data)
+        return response.data    
+    } catch (err) {
+        console.error(`user/tx/getAddresses:`,err)
+    }
+}

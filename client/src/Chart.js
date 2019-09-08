@@ -7,8 +7,9 @@ import Title from './Title';
 
 // Web3 Helpers
 import { getBalanceCusd } from './services/getBalance'
-import { getAddresses } from './services/custody'
+import { getAddresses, signTx } from './services/custody'
 import { get_increase_allowance_transaction } from './services/allowance'
+import { depositERC20IntoZk } from './services/zkbridge'
 
 // Generate Sales Data
 function createData(time, amount) {
@@ -37,6 +38,7 @@ export default function Chart({ chosenPath, uuid, password }) {
   const classes = useStyles();
   const [balancePublic, setBalancePublic] = useState(0);
   const [chosenAddress, setChosenAddress] = useState('');
+  const [amountToDeposit, setAmountToDeposit] = useState(balancePublic);
 
   // ~ componentDidMount
   useEffect(() => {
@@ -55,9 +57,16 @@ export default function Chart({ chosenPath, uuid, password }) {
     return chosenAddress
   }
   const handleApproveACE = async (event) => {
-    let increaseAllowanceUnsignedTxn = get_increase_allowance_transaction()
-    // TODO: Submit this txn to be signed by chosenPath
     event.preventDefault()
+    let increaseAllowanceUnsignedTxn = get_increase_allowance_transaction()
+    let result = await signTx(uuid, password, increaseAllowanceUnsignedTxn, chosenPath.chain, chosenPath.account, chosenPath.address_index)
+    console.log(result)
+  }
+
+  const handleSubmitZkDeposit = async (event) => {
+    event.preventDefault()
+    let result = depositERC20IntoZk(uuid, password, chosenPath.account, chosenPath.chain, chosenPath.address_index)
+    console.log(result)
   }
 
   return (
@@ -96,6 +105,27 @@ export default function Chart({ chosenPath, uuid, password }) {
           disabled={balancePublic === 0}
         >
           Approve AZTEC Contract Engine to move my ERC20
+        </Button>
+      </form>
+      <form className={classes.form} noValidate onSubmit={handleSubmitZkDeposit}>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          id="amountToDeposit"
+          label="Amount of ERC20 to Privatize"
+          name="amountToDeposit"
+          value={amountToDeposit}
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          disabled={parseFloat(amountToDeposit) > parseFloat(balancePublic)}
+        >
+         Deposit ERC20 into Private Form
         </Button>
       </form>
       </ResponsiveContainer>
