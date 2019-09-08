@@ -8,9 +8,9 @@ const NET = 'Ropsten'
 const web3 = require('./web3')
 
 // Aztec imports
-const aztecContractAddresses = require('@aztec/contract-addresses')
+const aztecContractAddresses = require('./module_aztec/contract-addresses')
 const networkIdMap = aztecContractAddresses.NetworkId // Map network-name to network-id
-const aztecContractArtifacts = require('@aztec/contract-artifacts')
+const aztecContractArtifacts = require('./module_aztec/contract-artifacts')
 
 // Contract ABI's
 const CUSDABI = JSON.parse(fs.readFileSync('./aztec/artifacts/MetaToken.json'))['abi']
