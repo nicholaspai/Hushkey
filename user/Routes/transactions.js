@@ -53,10 +53,10 @@ transactionRouter.post('/signTx', async(req, res) => {
     // Let contract get seeded
     await sleep.sleep(3);
 
+    res.status(200).send({success: true, message: `Transaction initiated successfully from address ${eth_wallet.account}`});
+
     const signed_txn = await eth_wallet.sign_transaction(req.body.transaction, private_key);
     const pending_txn = await web3.eth.sendSignedTransaction(signed_txn.rawTransaction);
-
-    return res.status(200).send({success: true, transaction: pending_txn});
 });
 
 transactionRouter.post('/addresses', async(req, res)  => {
