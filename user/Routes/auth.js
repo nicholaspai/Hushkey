@@ -3,7 +3,7 @@ const reqIsMissingParams = require('../../util/reqIsMissingParams');
 const { registerUser, verifyUser } = require('./helpers/auth/userAuth');
 const { authenticate } = require('../../middleware/authenticate');
 const axios = require('axios');
-require('dotenv').configs();
+require('dotenv').config();
 
 authRouter.post('/createUser', async (req, res) => {
     try {
