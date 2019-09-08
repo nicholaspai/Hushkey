@@ -142,6 +142,7 @@ export default function Dashboard() {
   const [open, setOpen] = useState(false);
   const [chain, setChain] = useState(chains[0])
   const [authed, setAuthed] = useState(false)
+  const [oracle, setOracle] = useState(0)
   
   // Log in on load
   useEffect(() => {
@@ -153,6 +154,16 @@ export default function Dashboard() {
     };
     fetchData();
   }, []);
+  // Load price
+  useEffect(() => {
+    const fetchData = async () => {
+      let base = chain.toUpperCase()
+      let quote = (base === 'TRX' ? 'USDT' : 'CUSD')
+      const pricefeed = await getQuote(base, quote)
+      setOracle(pricefeed.price)
+    };
+    fetchData();
+  }, [chain])
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -162,9 +173,6 @@ export default function Dashboard() {
   };
   const handleRefresh = async () => {
     if (authed) {
-      // let quote = (chain === 'TRX' ? 'USDT' : 'CUSD')
-      // let pricefeed = await getQuote(chain.toUpperCase(), quote.toUpperCase())
-      // console.log(pricefeed)
       let account = 0
       let addresses = await getAddresses(chain.toLowerCase(), account.toString())
       console.log(addresses)
@@ -265,7 +273,7 @@ export default function Dashboard() {
             {/* Balance */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <Deposits />
+                <Deposits oraclePrice={oracle}/>
               </Paper>
             </Grid>
             {/* Recent Orders */}

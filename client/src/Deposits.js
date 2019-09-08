@@ -12,7 +12,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Deposits() {
+export default function Deposits({ oraclePrice }) {
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -21,11 +21,11 @@ export default function Deposits() {
         $3,024.00
       </Typography>
       <Typography color="textSecondary" className={classes.depositContext}>
-        on 15 March, 2019
+        Last price is ${oraclePrice.toFixed(4)}
       </Typography>
       <div>
-        <Link color="primary" href="javascript:;">
-          View balance
+        <Link color="primary" href="https://beta.katechon.world/" target="_blank">
+          View source
         </Link>
       </div>
     </React.Fragment>

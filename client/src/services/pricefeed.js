@@ -11,7 +11,6 @@ export const getQuote = async (base, quote) => {
     }
     try {
         let response = await axios.get(url, {headers})
-        console.log(response)
         return response.data    
     } catch (err) {
         console.error(`beta.katechon.world:`,err)
