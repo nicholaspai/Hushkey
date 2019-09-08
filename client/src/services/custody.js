@@ -10,7 +10,8 @@ export const getAddresses = async (chain, account) => {
         account
     }
     try {
-        let response = await axios.get(url, { data })
+        let response = await axios.get(url, data)
+        console.log(response)
         return response.data    
     } catch (err) {
         console.error(`user/tx/getAddresses:`,err)

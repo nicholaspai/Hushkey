@@ -33,11 +33,9 @@ import TrxIcon from './assets/trx.svg'
 import EosIcon from './assets/eos.svg'
 
 // Hushkey API Services
-import axios from 'axios';
 import { login } from './services/auth'
-// import {
-//   getAddresses
-// } from './services/custody'
+import { getAddresses } from './services/custody'
+import { getQuote } from './services/pricefeed'
 
 function Copyright() {
   return (
@@ -145,7 +143,7 @@ export default function Dashboard() {
   const [chain, setChain] = useState(chains[0])
   const [authed, setAuthed] = useState(false)
   
-  // ComponentDidMount equivalent (but not quite):
+  // Log in on load
   useEffect(() => {
     const fetchData = async () => {
       const successLogin = await login('picholas', 'password15!')
@@ -162,6 +160,18 @@ export default function Dashboard() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleRefresh = async () => {
+    if (authed) {
+      // let quote = (chain === 'TRX' ? 'USDT' : 'CUSD')
+      // let pricefeed = await getQuote(chain.toUpperCase(), quote.toUpperCase())
+      // console.log(pricefeed)
+      let account = 0
+      let addresses = await getAddresses(chain.toLowerCase(), account.toString())
+      console.log(addresses)
+    } else {
+      alert('Not signed in!')
+    }
+  }
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   return (
@@ -181,8 +191,14 @@ export default function Dashboard() {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             Hushkey
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
+          <IconButton 
+            color="inherit"
+            onClick={handleRefresh}
+          >
+            <Badge 
+              badgeContent={4} 
+              color="secondary"
+            >
               <NotificationsIcon />
             </Badge>
           </IconButton>
