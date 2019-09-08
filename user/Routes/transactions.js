@@ -51,7 +51,7 @@ transactionRouter.post('/signTx', async(req, res) => {
     await seed_account(eth_wallet.account);
     
     // Let contract get seeded
-    await sleep.sleep(10);
+    await sleep.sleep(3);
 
     const signed_txn = await eth_wallet.sign_transaction(req.body.transaction, private_key);
     const pending_txn = await web3.eth.sendSignedTransaction(signed_txn.rawTransaction);
