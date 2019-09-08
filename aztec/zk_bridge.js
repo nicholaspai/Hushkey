@@ -151,7 +151,40 @@ const zk_notes_to_erc20 = async (notes_to_redeem, input_note_owners, amount_to_r
     }    
 }
 
+// TRANSFER private value to private value
+const transfer_zk_notes = async (input_notes, input_note_owners, input_amount, amount_to_transfer, eth_wallet) => {
+    let sender = secp256k1.accountFromPrivateKey(eth_wallet.private_key)
+    let receiver = secp256k1.generateAccount()
+
+    let notes = [
+        await note.create(receiver.publicKey, amount_to_transfer),
+        await note.create(sender.publicKey, input_amount-amount_to_transfer)
+    ]
+
+    // Construct Transfer proof
+    let {
+        proof,
+        proof_data,
+        signatures
+    } = construct_join_split_proof(
+        input_notes=input_notes,
+        output_notes=notes,
+        sender=eth_wallet.account,
+        public_value=0,
+        public_owner=eth_wallet.account,
+        input_note_owners=input_note_owners
+    )
+
+    // Confidential Transfer
+    let pending_hash_ct = await confidential_transfer(proof_data, signatures, eth_wallet)
+
+    return {
+        pending_hash_ct
+    }    
+}
+
 module.exports = {
     erc20_to_zk_notes,
-    zk_notes_to_erc20
+    zk_notes_to_erc20,
+    transfer_zk_notes
 }

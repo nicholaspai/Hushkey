@@ -92,5 +92,23 @@ const test = async () => {
         eth_wallet
     )
     console.log(withdraw_zk_notes)
+
+    // Transfer
+    const input_amount = 7
+    const amount_to_send = 4
+    let transfer_input_notes = convert_zk_notes.output_notes.slice(amount_to_redeem)
+    let transfer_input_note_owners = []
+    for (let i = 0; i < transfer_input_notes.length; i++) {
+        transfer_input_note_owners.push(secp256k1.accountFromPrivateKey(eth_wallet.private_key))
+    }
+    let transfer_zk_notes = await zk_bridge.transfer_zk_notes(
+        transfer_input_notes,
+        transfer_input_note_owners, 
+        input_amount,
+        amount_to_send, 
+        eth_wallet
+    )
+    console.log(transfer_zk_notes)
+
 }
 test()

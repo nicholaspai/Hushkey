@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -17,10 +17,27 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { mainListItems, secondaryListItems } from './listItems';
+import { chains } from './chains';
 import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Icon from '@material-ui/core/Icon';
+
+// Crypto Icons
+import EthIcon from './assets/eth.svg'
+import BtcIcon from './assets/btc.svg'
+import TrxIcon from './assets/trx.svg'
+import EosIcon from './assets/eos.svg'
+
+// Hushkey API Services
+import axios from 'axios';
+import { login } from './services/auth'
+// import {
+//   getAddresses
+// } from './services/custody'
 
 function Copyright() {
   return (
@@ -38,6 +55,12 @@ function Copyright() {
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
+  imageIcon: {
+    height: '100%'
+  },
+  iconRoot: {
+    textAlign: 'center'
+  },
   root: {
     display: 'flex',
   },
@@ -118,7 +141,21 @@ const useStyles = makeStyles(theme => ({
 
 export default function Dashboard() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(false);
+  const [chain, setChain] = useState(chains[0])
+  const [authed, setAuthed] = useState(false)
+  
+  // ComponentDidMount equivalent (but not quite):
+  useEffect(() => {
+    const fetchData = async () => {
+      const successLogin = await login('picholas', 'password15!')
+      if (successLogin.message === "User logged in") {
+        setAuthed(true);
+      }
+    };
+    fetchData();
+  }, []);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -142,7 +179,7 @@ export default function Dashboard() {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
+            Hushkey
           </Typography>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
@@ -164,9 +201,40 @@ export default function Dashboard() {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
-        <Divider />
-        <List>{secondaryListItems}</List>
+        <List>
+          <ListItem button onClick={() => setChain(chains[0])}>
+            <ListItemIcon>
+              <Icon className={classes.iconRoot}>
+                <img className={classes.imageIcon} src={EthIcon} alt="eth"/>
+              </Icon>
+            </ListItemIcon>
+            <ListItemText primary="Ethereum" />
+          </ListItem>
+          <ListItem button onClick={() => setChain(chains[1])}>
+            <ListItemIcon>
+              <Icon className={classes.iconRoot}>
+                <img className={classes.imageIcon} src={EosIcon} alt="eos"/>
+              </Icon>
+            </ListItemIcon>
+            <ListItemText primary="EOS" />
+          </ListItem>
+          <ListItem button onClick={() => setChain(chains[2])}>
+            <ListItemIcon>
+              <Icon className={classes.iconRoot}>
+                <img className={classes.imageIcon} src={TrxIcon} alt="trx"/>
+              </Icon>
+            </ListItemIcon>
+            <ListItemText primary="Tron" />
+          </ListItem>
+          <ListItem button onClick={() => setChain(chains[3])}>
+            <ListItemIcon>
+              <Icon className={classes.iconRoot}>
+                <img className={classes.imageIcon} src={BtcIcon} alt="btc"/>
+              </Icon>
+            </ListItemIcon>
+            <ListItemText primary="Bitcoin" />
+          </ListItem>
+        </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
@@ -178,7 +246,7 @@ export default function Dashboard() {
                 <Chart />
               </Paper>
             </Grid>
-            {/* Recent Deposits */}
+            {/* Balance */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
                 <Deposits />
@@ -187,7 +255,7 @@ export default function Dashboard() {
             {/* Recent Orders */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders />
+                <Orders chain={chain}/>
               </Paper>
             </Grid>
           </Grid>

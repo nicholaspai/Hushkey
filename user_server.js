@@ -4,6 +4,7 @@ const { userRouter, authRouter, transactionRouter } = require('./user/Routes');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const port = 3000;
+const cors = require('cors')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -18,6 +19,10 @@ try {
 } catch (err) {
     console.log("Check .env file");
 }
+app.use(cors({
+	origin: '*', // Be sure to switch to your production domain
+	optionsSuccessStatus: 200
+}));
 
 app.use('/user', userRouter);
 app.use('/user/auth', authRouter);

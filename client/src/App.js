@@ -26,7 +26,7 @@ class App extends Component {
   }
 
   /** ACTIONS TO PERFORM ON LOAD */
-  componentDidMount = async () => {
+  componentDidMount = () => {
   }
 
   render() {
@@ -39,7 +39,7 @@ class App extends Component {
     return (
       <div className={classes.root}>
         <div className={classes.main}>
-            <Auth />
+            <Dashboard />
         </div>
       </div>
     );

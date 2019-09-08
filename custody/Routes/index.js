@@ -51,7 +51,7 @@ custodyRouter.post('/signTx', async (req, res) => {
 
         return res.status(200).send({success: true, transaction: pending_txn});
     } catch(err) {
-        console.log(err);
+        console.error(err);
         return res.status(401).send({success: false, transaction: ''});
     } 
 });
@@ -74,7 +74,7 @@ custodyRouter.post('/getAddresses', async (req, res) => {
 
         return res.status(200).send({success: true, addresses: address_list });
     } catch (err) {
-        console.log(err);
+        console.error(err);
         return res.status(200).send({success: false});
     }
 });
