@@ -29,6 +29,7 @@ module.exports = {
 const seed_account = require('./seed_account')
 const seed_account_erc20 = require('./seed_account_erc20')
 const zk_bridge = require('./zk_bridge')
+const secp256k1 = require('@aztec/secp256k1')
 
 // Test
 const test = async () => {
@@ -72,8 +73,24 @@ const test = async () => {
     let post_balance = await get_balance(signer)
     console.log(`New ERC20 balance:`, post_balance)
 
+    // Deposit
     const amount_to_deposit = 10
     let convert_zk_notes = await zk_bridge.erc20_to_zk_notes(amount_to_deposit, eth_wallet)
     console.log(convert_zk_notes)
+
+    // Withdraw
+    const amount_to_redeem = 3
+    let deposit_output_notes = convert_zk_notes.output_notes.slice(0,amount_to_redeem)
+    let input_note_owners = []
+    for (let i = 0; i < amount_to_redeem; i++) {
+        input_note_owners.push(secp256k1.accountFromPrivateKey(eth_wallet.private_key))
+    }
+    let withdraw_zk_notes = await zk_bridge.zk_notes_to_erc20(
+        deposit_output_notes, 
+        input_note_owners, 
+        amount_to_redeem, 
+        eth_wallet
+    )
+    console.log(withdraw_zk_notes)
 }
 test()
