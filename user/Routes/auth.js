@@ -3,6 +3,7 @@ const reqIsMissingParams = require('../../util/reqIsMissingParams');
 const { registerUser, verifyUser } = require('./helpers/auth/userAuth');
 const { authenticate } = require('../../middleware/authenticate');
 const axios = require('axios');
+require('dotenv').configs();
 
 authRouter.post('/createUser', async (req, res) => {
     try {
@@ -19,7 +20,7 @@ authRouter.post('/createUser', async (req, res) => {
         let data = {
             "uuid": req.body.uuid
         }
-        await axios.post('http://localhost:3001/custody/generateWallet', data);
+        await axios.post(`http://${process.env.root}/custody/generateWallet`, data);
 
         res.status(200).send('User creation successful');
 

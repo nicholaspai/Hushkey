@@ -3,6 +3,7 @@ const reqIsMissingParams = require('../../util/reqIsMissingParams');
 const { authenticate } = require('../../middleware/authenticate');
 const { buildTransaction } = require('./helpers/send/buildTransaction');
 const axios = require('axios');
+require('dotenv').config();
 
 transactionRouter.post('/buildTx', authenticate, async (req, res) => {
     const requiredParams = ['chain', 'txInfo'];
@@ -25,7 +26,7 @@ transactionRouter.post('/signTx', authenticate, async(req, res) => {
         path: req.body.path
     }
     try {
-        const txResponse = await axios.post('http://localhost:3001/custody/signTx', data);
+        const txResponse = await axios.post(`http://${process.env.ROOT}/custody/signTx`, data);
         if (!txResponse.data.success) {
             res.status(401).send({success: false, transaction: ''});
         } else {
@@ -49,7 +50,7 @@ transactionRouter.get('/getAddresses', authenticate, async(req, res)  => {
             "account": req.body.account
         }
 
-        const addressResponse = await axios.post('http://localhost:3001/custody/getAddresses', data);
+        const addressResponse = await axios.post(`http://${process.env.ROOT}/custody/getAddresses`, data);
         if (!addressResponse.data.success) {
             return res.status(401).send({message: "Failed"});
         }
