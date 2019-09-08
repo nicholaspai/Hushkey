@@ -18,6 +18,7 @@ import Button from '@material-ui/core/Button';
 import MenuIcon from '@material-ui/icons/Menu';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { chains } from './chains';
 import Chart from './Chart';
@@ -35,7 +36,6 @@ import TrxIcon from './assets/trx.svg'
 import EosIcon from './assets/eos.svg'
 
 // Hushkey API Services
-import { login } from './services/auth'
 import { getAddresses } from './services/custody'
 import { getQuote } from './services/pricefeed'
 import { dripCusd, dripEth } from './services/faucet'
@@ -134,25 +134,26 @@ const useStyles = makeStyles(theme => ({
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [uuid, setUuid] = useState('picholas')
+  const [password, setPassword] = useState('password15!')
   const [chain, setChain] = useState(chains[0])
-  const [authed, setAuthed] = useState(false)
+  const [account, setAccount] = useState(0)
   const [oracle, setOracle] = useState(0)
   const [faucet, setFaucet] = useState(false)
   const [addressDripEth, setAddressDripEth] = useState('')
   const [addressDripCusd, setAddressDripCusd] = useState('')
   const [pendingHashCusd, setPendingHashCusd] = useState('')
   const [pendingHashEth, setPendingHashEth] = useState('')
+  const [addresses, setAddresses] = useState([])
 
-  // Log in on load
+  // ~ componentDidMount
   useEffect(() => {
     const fetchData = async () => {
-      const successLogin = await login('picholas', 'password15!')
-      if (successLogin.message === "User logged in") {
-        setAuthed(true);
-      }
+      let _addresses = await getAddresses(uuid, password, chain, account)
+      setAddresses(_addresses.addresses)
     };
     fetchData();
-  }, []);
+  }, [uuid, password, chain, account]);
   // Load price
   useEffect(() => {
     const fetchData = async () => {
@@ -171,13 +172,8 @@ export default function Dashboard() {
     setOpen(false);
   };
   const handleRefresh = async () => {
-    if (authed) {
-      let account = 0
-      let addresses = await getAddresses(chain.toLowerCase(), account.toString())
-      console.log(addresses)
-    } else {
-      alert('Not signed in!')
-    }
+      let _addresses = await getAddresses(uuid, password, chain, account)
+      setAddresses(_addresses.addresses)
   }
   const handleDripCusd = async (event) => {
     event.preventDefault()
@@ -212,12 +208,7 @@ export default function Dashboard() {
             color="inherit"
             onClick={handleRefresh}
           >
-            <Badge 
-              badgeContent={4} 
-              color="secondary"
-            >
-              <NotificationsIcon />
-            </Badge>
+            <AutorenewIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -301,13 +292,13 @@ export default function Dashboard() {
             {/* Balance */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <Deposits oraclePrice={oracle}/>
+                <Deposits oraclePrice={oracle} chain={chain}/>
               </Paper>
             </Grid>
             {/* Recent Orders */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders chain={chain}/>
+                <Orders chain={chain} account={account} setAccount={setAccount} addresses={addresses}/>
               </Paper>
             </Grid>
           </Grid>

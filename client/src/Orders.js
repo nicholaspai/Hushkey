@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Orders({ chain }) {
+export default function Orders({ chain, account, setAccount, addresses }) {
   const marks = [
     {
       value: 0,
@@ -72,18 +72,19 @@ export default function Orders({ chain }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <TableRow key={row.index}>
-              <TableCell>{row.index}</TableCell>
-              <TableCell>{row.address}</TableCell>
-              <TableCell align="right">{row.transact}</TableCell>
+          {addresses.map((address,i) => (
+            <TableRow key={i}>
+              <TableCell>{i}</TableCell>
+              <TableCell>{address}</TableCell>
+              <TableCell align="right">Transact</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       <div className={classes.seeMore}>
         <Slider
-          defaultValue={0}
+          onChange={(e, val)=>setAccount(val)}
+          defaultValue={account}
           aria-labelledby="discrete-slider"
           valueLabelDisplay="auto"
           step={1}

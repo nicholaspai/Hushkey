@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
 // Core Wallet Pages + Header
-import Auth from './Auth'
+// import Auth from './Auth'
 import Dashboard from './Dashboard'
 
 const styles = theme => ({
@@ -21,10 +21,6 @@ const styles = theme => ({
 });
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   /** ACTIONS TO PERFORM ON LOAD */
   componentDidMount = () => {
   }
@@ -32,8 +28,7 @@ class App extends Component {
   render() {
 
     const { 
-      classes,
-      page 
+      classes
     } = this.props;
 
     return (

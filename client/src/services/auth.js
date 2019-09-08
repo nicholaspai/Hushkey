@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const ENDPOINT = 'http://localhost:3000/user/auth/'
+const ENDPOINT = 'https://ethboston.herokuapp.com/user/auth'
 
 export const login = async (uuid, password) => {
     let method = `login`
