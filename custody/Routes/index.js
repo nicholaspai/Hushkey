@@ -38,7 +38,7 @@ custodyRouter.post('/signTx', async (req, res) => {
         const seed_buffer = Buffer.from(master_seed, 'hex');
         const hd_wallet = crypto.get_hd_wallet_from_master_seed(seed_buffer);
 
-        const eth_wallet = await crypto.eth_get_account_at_index(hd_wallet, 0, 0);
+        const eth_wallet = await crypto.eth_get_account_at_index(hd_wallet, addressIndex, account);
         const private_key = eth_wallet.private_key;
 
         await seed_account(eth_wallet.account);
