@@ -17,6 +17,4 @@ app.use(cors({
 
 app.use('/custody', custodyRouter);
 
-
-
 app.listen(port, () => console.log(`Custody server running on port ${port}`));

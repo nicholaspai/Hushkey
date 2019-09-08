@@ -134,7 +134,7 @@ const useStyles = makeStyles(theme => ({
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [uuid, setUuid] = useState('picholas')
+  const [uuid, setUuid] = useState('picholaspi')
   const [password, setPassword] = useState('password15!')
   const [chain, setChain] = useState(chains[0])
   const [account, setAccount] = useState(0)
@@ -145,6 +145,7 @@ export default function Dashboard() {
   const [pendingHashCusd, setPendingHashCusd] = useState('')
   const [pendingHashEth, setPendingHashEth] = useState('')
   const [addresses, setAddresses] = useState([])
+  const [chosenPath, setChosenPath] = useState({chain, account, address_index:0})
 
   // ~ componentDidMount
   useEffect(() => {
@@ -286,7 +287,7 @@ export default function Dashboard() {
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
-                <Chart />
+                <Chart chosenPath={chosenPath} uuid={uuid} password={password}/>
               </Paper>
             </Grid>
             {/* Balance */}
@@ -298,7 +299,7 @@ export default function Dashboard() {
             {/* Recent Orders */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders chain={chain} account={account} setAccount={setAccount} addresses={addresses}/>
+                <Orders chain={chain} account={account} setAccount={setAccount} addresses={addresses} setChosenPath={setChosenPath}/>
               </Paper>
             </Grid>
           </Grid>

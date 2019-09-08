@@ -42,3 +42,9 @@ export const getBalanceBtc = async (address) => {
     return 0
 }
 
+const { CusdContract } = require('./getContract')
+export const getBalanceCusd = async (address) => {
+    let balance = await CusdContract.methods.balanceOf(address).call()
+    return web3.utils.fromWei(balance.toString(), 'ether')
+}
+

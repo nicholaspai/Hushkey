@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
 import Title from './Title';
+
+// Web3 Helpers
+import { getBalanceCusd } from './services/getBalance'
+import { getAddresses } from './services/custody'
+import { get_increase_allowance_transaction } from './services/allowance'
 
 // Generate Sales Data
 function createData(time, amount) {
@@ -18,47 +26,78 @@ const data = [
   createData('21:00', 2400),
   createData('24:00', undefined),
 ];
+const useStyles = makeStyles(theme => ({
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+}));
 
-export default function Chart() {
+export default function Chart({ chosenPath, uuid, password }) {
+  const classes = useStyles();
+  const [balancePublic, setBalancePublic] = useState(0);
+  const [chosenAddress, setChosenAddress] = useState('');
+
+  // ~ componentDidMount
+  useEffect(() => {
+    const fetchData = async () => {
+      let chosen_address = await getAddressFromChosenPath(chosenPath)
+      setChosenAddress(chosen_address)
+      let _balance = await getBalanceCusd(chosen_address)
+      setBalancePublic(_balance)
+    };
+    fetchData();
+  }, [chosenPath]);
+
+  const getAddressFromChosenPath = async (chosenPath) => {
+    let all_addresses = await getAddresses(uuid, password, chosenPath.chain, chosenPath.account)
+    let chosenAddress = all_addresses.addresses[chosenPath.address_index]
+    return chosenAddress
+  }
+  const handleApproveACE = async (event) => {
+    let increaseAllowanceUnsignedTxn = get_increase_allowance_transaction()
+    // TODO: Submit this txn to be signed by chosenPath
+    event.preventDefault()
+  }
+
   return (
     <React.Fragment>
       <Title>
-        Hushkey is custody as a service, enabling dApp developers 
-        and especially crypto novices to sign blockchain transactions without
-        their private keys ever being exposed to networks or leaving the server. The Hushkey servers generate a 
-        secure hierarchical deterministic wallet (implementing BIP32+44+39) for each
-        unique user. The wallet is essentially a master seed phrase that we securely store. 
-        The generation of individual keys is deterministically derived from this master seed,
-        so that users can recover their keys in case of wallet loss. Additionally,
-        the private keys of the wallet should be organized under an access hierarchy. Each element of the hierarchy corresponds to a group of users and a
-        pair of signing keys associated with them. The privileges of a group of users depend on their
-        level in the hierarchy. Users with higher privileges should be able
-        to derive the keys of users on lower levels and in turn to sign messages (i.e., transactions) on
-        their behalf. Users on lower levels, however, should not be able to escalate their privileges to
-        the higher levels of the hierarchy, not even when colluding with others. Finally, we add in features
-        that enhance security and privacy for the user using AZTEC for disguising Ethereum transactions,
-        whitelisting to restrict contract interactions with trusted addresses only, and transfer limits
-        to reduce worst-case loss scenarios. End users can sign arbitrary blockchain transactions via the Hushkey API interface. 
-        Crucially, the only data that leaves the Hushkey server are signed transactions, not keys.
-        </Title>
+        Take my ERC20 Private with AZTEC
+      </Title>
       <ResponsiveContainer>
-        <LineChart
-          data={data}
-          margin={{
-            top: 16,
-            right: 16,
-            bottom: 0,
-            left: 24,
-          }}
+      <form className={classes.form} noValidate onSubmit={handleApproveACE}>
+        <TextField
+          disabled
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          id="address"
+          label="Chosen address"
+          name="address"
+          value={chosenAddress}
+        />
+        <TextField
+          disabled
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          id="balance"
+          label="ERC20"
+          name="balance"
+          value={balancePublic}
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          disabled={balancePublic === 0}
         >
-          <XAxis dataKey="time" />
-          <YAxis>
-            <Label angle={270} position="left" style={{ textAnchor: 'middle' }}>
-              Sales ($)
-            </Label>
-          </YAxis>
-          <Line type="monotone" dataKey="amount" stroke="#556CD6" dot={false} />
-        </LineChart>
+          Approve AZTEC Contract Engine to move my ERC20
+        </Button>
+      </form>
       </ResponsiveContainer>
     </React.Fragment>
   );

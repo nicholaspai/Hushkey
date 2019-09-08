@@ -4,6 +4,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
+import Button from '@material-ui/core/Button';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -31,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Orders({ chain, account, setAccount, addresses }) {
+export default function Orders({ chain, account, setAccount, addresses, setChosenPath }) {
   const marks = [
     {
       value: 0,
@@ -76,7 +77,13 @@ export default function Orders({ chain, account, setAccount, addresses }) {
             <TableRow key={i}>
               <TableCell>{i}</TableCell>
               <TableCell>{address}</TableCell>
-              <TableCell align="right">Transact</TableCell>
+              <TableCell align="right">
+                <Button
+                  onClick={()=> setChosenPath({chain, account, address_index:i})}
+                >
+                  Transact
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
