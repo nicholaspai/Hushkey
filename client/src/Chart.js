@@ -9,7 +9,7 @@ import Title from './Title';
 import { getBalanceCusd } from './services/getBalance'
 import { getAddresses, signTx } from './services/custody'
 import { get_increase_allowance_transaction } from './services/allowance'
-import { depositERC20IntoZk } from './services/zkbridge'
+// import { depositERC20IntoZk } from './services/zkbridge'
 
 // Generate Sales Data
 function createData(time, amount) {
@@ -40,6 +40,11 @@ export default function Chart({ chosenPath, uuid, password }) {
   const [chosenAddress, setChosenAddress] = useState('');
   const [amountToDeposit, setAmountToDeposit] = useState(balancePublic);
 
+  const getAddressFromChosenPath = async (chosenPath) => {
+    let all_addresses = await getAddresses(uuid, password, chosenPath.chain, chosenPath.account)
+    let chosenAddress = all_addresses.addresses[chosenPath.address_index]
+    return chosenAddress
+  }
   // ~ componentDidMount
   useEffect(() => {
     const fetchData = async () => {
@@ -51,11 +56,6 @@ export default function Chart({ chosenPath, uuid, password }) {
     fetchData();
   }, [chosenPath]);
 
-  const getAddressFromChosenPath = async (chosenPath) => {
-    let all_addresses = await getAddresses(uuid, password, chosenPath.chain, chosenPath.account)
-    let chosenAddress = all_addresses.addresses[chosenPath.address_index]
-    return chosenAddress
-  }
   const handleApproveACE = async (event) => {
     event.preventDefault()
     let increaseAllowanceUnsignedTxn = get_increase_allowance_transaction()
@@ -63,11 +63,11 @@ export default function Chart({ chosenPath, uuid, password }) {
     console.log(result)
   }
 
-  const handleSubmitZkDeposit = async (event) => {
-    event.preventDefault()
-    let result = depositERC20IntoZk(uuid, password, chosenPath.account, chosenPath.chain, chosenPath.address_index)
-    console.log(result)
-  }
+  // const handleSubmitZkDeposit = async (event) => {
+  //   event.preventDefault()
+  //   let result = depositERC20IntoZk(uuid, password, chosenPath.account, chosenPath.chain, chosenPath.address_index)
+  //   console.log(result)
+  // }
 
   return (
     <React.Fragment>
@@ -107,7 +107,7 @@ export default function Chart({ chosenPath, uuid, password }) {
           Approve AZTEC Contract Engine to move my ERC20
         </Button>
       </form>
-      <form className={classes.form} noValidate onSubmit={handleSubmitZkDeposit}>
+      {/* <form className={classes.form} noValidate onSubmit={handleSubmitZkDeposit}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -127,7 +127,7 @@ export default function Chart({ chosenPath, uuid, password }) {
         >
          Deposit ERC20 into Private Form
         </Button>
-      </form>
+      </form> */}
       </ResponsiveContainer>
     </React.Fragment>
   );
