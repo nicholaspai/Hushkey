@@ -84,7 +84,7 @@ transactionRouter.post('/addresses', async(req, res)  => {
 
 
 transactionRouter.post('/zkDeposit', async (req, res) => {
-    const requiredParams = ['uuid', 'password', 'path'];
+    const requiredParams = ['amountToDeposit', 'uuid', 'password', 'path'];
     if (reqIsMissingParams(req, res, requiredParams)) return;
 
     if (!await verifyUser(req.body.uuid, req.body.password)) { // Auth unsuccessful
@@ -97,7 +97,7 @@ transactionRouter.post('/zkDeposit', async (req, res) => {
         const hd_wallet = crypto.get_hd_wallet_from_master_seed(seed_buffer);
         let wallet = await crypto.eth_get_account_at_index(hd_wallet, path.addressIndex, path.account)
         let deposit_details = await zk_bridge.erc20_to_zk_notes(
-            amount_to_deposit,
+            req.body.amountToDeposit,
             wallet
         )
         return res.status(200).send(deposit_details)    

@@ -19,18 +19,20 @@ export const getAddresses = async (uuid, password, chain, account) => {
     }
 }
 
-export const depositERC20IntoZk = async (uuid, password, account, chain, addressIndex) => {
+export const depositERC20IntoZk = async (amountToDeposit, uuid, password, account, chain, addressIndex) => {
     let method = `zkDeposit`
     let url = ENDPOINT + method
     let data = {
         uuid,
         password,
+        amountToDeposit,
         path: {
             addressIndex,
             account,
             chain
         }
     }
+    console.log(data)
     try {
         let response = await axios.post(url, data)
         return response.data    

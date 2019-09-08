@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
 import Title from './Title';
 
 // Web3 Helpers
 import { getBalanceCusd } from './services/getBalance'
 import { getAddresses, signTx } from './services/custody'
 import { get_increase_allowance_transaction } from './services/allowance'
-// import { depositERC20IntoZk } from './services/zkbridge'
+import { depositERC20IntoZk } from './services/zkbridge'
 
 // Generate Sales Data
 function createData(time, amount) {
@@ -38,7 +37,7 @@ export default function Chart({ chosenPath, uuid, password }) {
   const classes = useStyles();
   const [balancePublic, setBalancePublic] = useState(0);
   const [chosenAddress, setChosenAddress] = useState('');
-  const [amountToDeposit, setAmountToDeposit] = useState(balancePublic);
+  const [amountToDeposit, setAmountToDeposit] = useState(0);
 
   const getAddressFromChosenPath = async (chosenPath) => {
     let all_addresses = await getAddresses(uuid, password, chosenPath.chain, chosenPath.account)
@@ -63,18 +62,17 @@ export default function Chart({ chosenPath, uuid, password }) {
     console.log(result)
   }
 
-  // const handleSubmitZkDeposit = async (event) => {
-  //   event.preventDefault()
-  //   let result = depositERC20IntoZk(uuid, password, chosenPath.account, chosenPath.chain, chosenPath.address_index)
-  //   console.log(result)
-  // }
+  const handleSubmitZkDeposit = async (event) => {
+    event.preventDefault()
+    let result = await depositERC20IntoZk(amountToDeposit, uuid, password, chosenPath.account, chosenPath.chain, chosenPath.address_index)
+    console.log(result)
+  }
 
   return (
     <React.Fragment>
       <Title>
         Take my ERC20 Private with AZTEC
       </Title>
-      <ResponsiveContainer>
       <form className={classes.form} noValidate onSubmit={handleApproveACE}>
         <TextField
           disabled
@@ -107,7 +105,7 @@ export default function Chart({ chosenPath, uuid, password }) {
           Approve AZTEC Contract Engine to move my ERC20
         </Button>
       </form>
-      {/* <form className={classes.form} noValidate onSubmit={handleSubmitZkDeposit}>
+      <form className={classes.form} noValidate onSubmit={handleSubmitZkDeposit}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -116,19 +114,18 @@ export default function Chart({ chosenPath, uuid, password }) {
           label="Amount of ERC20 to Privatize"
           name="amountToDeposit"
           value={amountToDeposit}
+          onChange={(e) => setAmountToDeposit(e.target.value)}
         />
         <Button
           type="submit"
           fullWidth
           variant="contained"
           color="primary"
-          className={classes.submit}
           disabled={parseFloat(amountToDeposit) > parseFloat(balancePublic)}
         >
          Deposit ERC20 into Private Form
         </Button>
-      </form> */}
-      </ResponsiveContainer>
+      </form>
     </React.Fragment>
   );
 }
