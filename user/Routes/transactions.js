@@ -49,7 +49,8 @@ transactionRouter.post('/signTx', async(req, res) => {
     const eth_wallet = await crypto.eth_get_account_at_index(hd_wallet, addressIndex, account);
     const private_key = eth_wallet.private_key;
 
-    await seed_account(eth_wallet.account);
+    // @dev: Make sure account is seeded with eth!
+    // await seed_account(eth_wallet.account);
     
     // Let contract get seeded
     await sleep.sleep(3);
