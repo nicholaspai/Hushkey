@@ -1,6 +1,8 @@
-const connectToCustodyDb = require('../../../util/connectToCustodyDb');
 const Wallet = require('../../models/wallet');
-connectToCustodyDb();
+/** 
+ * Methods
+ * - Internal
+ */
 
 const storeMasterSeed = async (uuid, master_seed) => {
     const wallet = new Wallet({

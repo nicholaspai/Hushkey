@@ -134,8 +134,8 @@ const useStyles = makeStyles(theme => ({
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [uuid, setUuid] = useState('picholaspi')
-  const [password, setPassword] = useState('password15!')
+  const [uuid, setUuid] = useState('vampire')
+  const [password, setPassword] = useState('garlic!')
   const [chain, setChain] = useState(chains[0])
   const [account, setAccount] = useState(0)
   const [oracle, setOracle] = useState(0)
@@ -183,7 +183,7 @@ export default function Dashboard() {
   }
   const handleDripEth = async (event) => {
     event.preventDefault()
-    let dripped = await dripEth(0.5, addressDripEth)
+    let dripped = await dripEth(0.1, addressDripEth)
     setPendingHashEth(dripped.pending_hash)
   }
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -343,7 +343,7 @@ export default function Dashboard() {
                       className={classes.submit}
                       disabled={!addressDripCusd}
                     >
-                      Get 50 ERC20
+                      Get ERC20
                     </Button>
                   </form>
                 </Paper>
@@ -384,7 +384,7 @@ export default function Dashboard() {
                       className={classes.submit}
                       disabled={!addressDripEth}
                     >
-                      Get 0.5 ETH
+                      Get ETH
                     </Button>
                   </form>
                 </Paper>

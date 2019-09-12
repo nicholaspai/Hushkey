@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-const ENDPOINT = 'https://ethboston.herokuapp.com/user/auth'
+const ENDPOINT = require('./networkConstants')['SERVER_ENDPOINT']
 
 export const login = async (uuid, password) => {
-    let method = `login`
+    let method = `/user/auth/login`
     let url = ENDPOINT + method
     let data = {
         uuid,

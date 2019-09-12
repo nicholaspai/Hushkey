@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-const ENDPOINT = 'https://ethboston.herokuapp.com/user/tx/'
+const ENDPOINT = require('./networkConstants')['SERVER_ENDPOINT']
 
 export const getAddresses = async (uuid, password, chain, account) => {
-    let method = `addresses`
+    let method = `/user/tx/addresses`
     let url = ENDPOINT + method
     let data = {
         uuid,
@@ -20,7 +20,7 @@ export const getAddresses = async (uuid, password, chain, account) => {
 }
 
 export const depositERC20IntoZk = async (amountToDeposit, uuid, password, account, chain, addressIndex) => {
-    let method = `zkDeposit`
+    let method = `/user/tx/zkDeposit`
     let url = ENDPOINT + method
     let data = {
         uuid,
@@ -32,7 +32,6 @@ export const depositERC20IntoZk = async (amountToDeposit, uuid, password, accoun
             chain
         }
     }
-    console.log(data)
     try {
         let response = await axios.post(url, data)
         return response.data    

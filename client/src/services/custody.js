@@ -1,10 +1,11 @@
 import axios from 'axios'
 
-const ENDPOINT = 'https://ethboston.herokuapp.com/user/tx/'
+const ENDPOINT = require('./networkConstants')['SERVER_ENDPOINT']
 
 export const getAddresses = async (uuid, password, chain, account) => {
-    let method = `addresses`
+    let method = `/user/tx/addresses`
     let url = ENDPOINT + method
+
     let data = {
         uuid,
         password,
@@ -20,7 +21,7 @@ export const getAddresses = async (uuid, password, chain, account) => {
 }
 
 export const signTx = async (uuid, password, transaction, chain, account, addressIndex) => {
-    let method =`signTx`
+    let method =`/user/tx/signTx`
     let url = ENDPOINT + method
     let data = {
         uuid,

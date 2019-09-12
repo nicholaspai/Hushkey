@@ -1,6 +1,6 @@
 const authRouter = require('express').Router();
 const reqIsMissingParams = require('../../util/reqIsMissingParams');
-const { registerUser } = require('./helpers/auth/userAuth');
+const { registerUser, verifyUser } = require('./helpers/auth/userAuth');
 const crypto = require('../../crypto');
 const { storeMasterSeed } = require('../../custody/Routes/helpers/walletAuth');
 
@@ -14,7 +14,7 @@ authRouter.post('/createUser', async (req, res) => {
         const status = await registerUser(req.body.uuid, req.body.password);
 
         if (!status.success) {
-            return res.status(200).send('Username taken, try another');
+            return res.status(400).send('Username taken, try another');
         }
 
         // Generates an HD wallet for this new user and stores their master seed derivation phrase
@@ -29,6 +29,23 @@ authRouter.post('/createUser', async (req, res) => {
         res.status(400).send('User creation failed');
     }
 });
+
+authRouter.get('/createUser', async (req, res) => {
+    try {
+        const requiredParams = ['uuid', 'password'];
+        if (reqIsMissingParams(req, res, requiredParams)) return;
+        const status = await verifyUser(req.body.uuid, req.body.password);
+
+        if (!status.success) {
+            return res.status(400).send('Username taken, try another');
+        }
+        return res.status(200).send('User read successful');
+
+    } catch(err) {
+        console.log(err);
+        res.status(400).send('User creation failed');
+    }
+})
 
 module.exports = {
     authRouter
